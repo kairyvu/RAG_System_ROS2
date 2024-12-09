@@ -4,21 +4,15 @@ from llm_engineering.domain.base import NoSQLBaseDocument, VectorBaseDocument
 from llm_engineering.domain.types import DataCategory
 
 from .chunking_data_handlers import (
-    ArticleChunkingHandler,
     ChunkingDataHandler,
-    PostChunkingHandler,
     RepositoryChunkingHandler,
 )
 from .cleaning_data_handlers import (
-    ArticleCleaningHandler,
     CleaningDataHandler,
-    PostCleaningHandler,
     RepositoryCleaningHandler,
 )
 from .embedding_data_handlers import (
-    ArticleEmbeddingHandler,
     EmbeddingDataHandler,
-    PostEmbeddingHandler,
     QueryEmbeddingHandler,
     RepositoryEmbeddingHandler,
 )
@@ -27,11 +21,7 @@ from .embedding_data_handlers import (
 class CleaningHandlerFactory:
     @staticmethod
     def create_handler(data_category: DataCategory) -> CleaningDataHandler:
-        if data_category == DataCategory.POSTS:
-            return PostCleaningHandler()
-        elif data_category == DataCategory.ARTICLES:
-            return ArticleCleaningHandler()
-        elif data_category == DataCategory.REPOSITORIES:
+        if data_category == DataCategory.REPOSITORIES:
             return RepositoryCleaningHandler()
         else:
             raise ValueError("Unsupported data type")
@@ -58,11 +48,7 @@ class CleaningDispatcher:
 class ChunkingHandlerFactory:
     @staticmethod
     def create_handler(data_category: DataCategory) -> ChunkingDataHandler:
-        if data_category == DataCategory.POSTS:
-            return PostChunkingHandler()
-        elif data_category == DataCategory.ARTICLES:
-            return ArticleChunkingHandler()
-        elif data_category == DataCategory.REPOSITORIES:
+        if data_category == DataCategory.REPOSITORIES:
             return RepositoryChunkingHandler()
         else:
             raise ValueError("Unsupported data type")
@@ -91,11 +77,7 @@ class EmbeddingHandlerFactory:
     def create_handler(data_category: DataCategory) -> EmbeddingDataHandler:
         if data_category == DataCategory.QUERIES:
             return QueryEmbeddingHandler()
-        if data_category == DataCategory.POSTS:
-            return PostEmbeddingHandler()
-        elif data_category == DataCategory.ARTICLES:
-            return ArticleEmbeddingHandler()
-        elif data_category == DataCategory.REPOSITORIES:
+        if data_category == DataCategory.REPOSITORIES:
             return RepositoryEmbeddingHandler()
         else:
             raise ValueError("Unsupported data type")

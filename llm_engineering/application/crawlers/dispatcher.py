@@ -4,10 +4,7 @@ from urllib.parse import urlparse
 from loguru import logger
 
 from .base import BaseCrawler
-from .custom_article import CustomArticleCrawler
 from .github import GithubCrawler
-from .linkedin import LinkedInCrawler
-from .medium import MediumCrawler
 
 
 class CrawlerDispatcher:
@@ -19,16 +16,6 @@ class CrawlerDispatcher:
         dispatcher = cls()
 
         return dispatcher
-
-    def register_medium(self) -> "CrawlerDispatcher":
-        self.register("https://medium.com", MediumCrawler)
-
-        return self
-
-    def register_linkedin(self) -> "CrawlerDispatcher":
-        self.register("https://linkedin.com", LinkedInCrawler)
-
-        return self
 
     def register_github(self) -> "CrawlerDispatcher":
         self.register("https://github.com", GithubCrawler)
@@ -45,7 +32,5 @@ class CrawlerDispatcher:
         for pattern, crawler in self._crawlers.items():
             if re.match(pattern, url):
                 return crawler()
-        else:
-            logger.warning(f"No crawler found for {url}. Defaulting to CustomArticleCrawler.")
-
-            return CustomArticleCrawler()
+        logger.warning(f"No crawler found for {url}")
+        return

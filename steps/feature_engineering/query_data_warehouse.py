@@ -4,29 +4,25 @@ from loguru import logger
 from typing_extensions import Annotated
 from zenml import get_step_context, step
 
-from llm_engineering.application import utils
 from llm_engineering.domain.base.nosql import NoSQLBaseDocument
-from llm_engineering.domain.documents import ArticleDocument, Document, PostDocument, RepositoryDocument, UserDocument
+from llm_engineering.domain.documents import Document, RepoInfoDocument, RepositoryDocument
 
 
 @step
 def query_data_warehouse(
-    author_full_names: list[str],
+    links: list[str],
 ) -> Annotated[list, "raw_documents"]:
     documents = []
-    authors = []
-    for author_full_name in author_full_names:
-        logger.info(f"Querying data warehouse for user: {author_full_name}")
+    for link in links:
+        repo_name = link.rstrip("/").split("/")[-1]
+        logger.info(f"Querying data warehouse for {repo_name} subdomain")
 
-        first_name, last_name = utils.split_user_full_name(author_full_name)
-        logger.info(f"First name: {first_name}, Last name: {last_name}")
-        user = UserDocument.get_or_create(first_name=first_name, last_name=last_name)
-        authors.append(user)
+        profile = RepoInfoDocument.get_or_create(link=link, title=repo_name)
 
-        results = fetch_all_data(user)
-        user_documents = [doc for query_result in results.values() for doc in query_result]
+        results = fetch_all_data(profile)
+        repo_documents = [doc for query_result in results.values() for doc in query_result]
 
-        documents.extend(user_documents)
+        documents.extend(repo_documents)
 
     step_context = get_step_context()
     step_context.add_output_metadata(output_name="raw_documents", metadata=_get_metadata(documents))
@@ -34,13 +30,11 @@ def query_data_warehouse(
     return documents
 
 
-def fetch_all_data(user: UserDocument) -> dict[str, list[NoSQLBaseDocument]]:
-    user_id = str(user.id)
+def fetch_all_data(doc: RepoInfoDocument) -> dict[str, list[NoSQLBaseDocument]]:
+    source_id = str(doc.id)
     with ThreadPoolExecutor() as executor:
         future_to_query = {
-            executor.submit(__fetch_articles, user_id): "articles",
-            executor.submit(__fetch_posts, user_id): "posts",
-            executor.submit(__fetch_repositories, user_id): "repositories",
+            executor.submit(__fetch_repositories, source_id): "repositories",
         }
 
         results = {}
@@ -56,16 +50,8 @@ def fetch_all_data(user: UserDocument) -> dict[str, list[NoSQLBaseDocument]]:
     return results
 
 
-def __fetch_articles(user_id) -> list[NoSQLBaseDocument]:
-    return ArticleDocument.bulk_find(author_id=user_id)
-
-
-def __fetch_posts(user_id) -> list[NoSQLBaseDocument]:
-    return PostDocument.bulk_find(author_id=user_id)
-
-
-def __fetch_repositories(user_id) -> list[NoSQLBaseDocument]:
-    return RepositoryDocument.bulk_find(author_id=user_id)
+def __fetch_repositories(source_id) -> list[NoSQLBaseDocument]:
+    return RepositoryDocument.bulk_find(source_id=source_id)
 
 
 def _get_metadata(documents: list[Document]) -> dict:

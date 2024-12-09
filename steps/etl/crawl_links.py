@@ -6,12 +6,12 @@ from typing_extensions import Annotated
 from zenml import get_step_context, step
 
 from llm_engineering.application.crawlers.dispatcher import CrawlerDispatcher
-from llm_engineering.domain.documents import UserDocument
+from llm_engineering.domain.documents import RepositoryDocument
 
 
 @step
-def crawl_links(user: UserDocument, links: list[str]) -> Annotated[list[str], "crawled_links"]:
-    dispatcher = CrawlerDispatcher.build().register_linkedin().register_medium().register_github()
+def crawl_links(user: RepositoryDocument, links: list[str]) -> Annotated[list[str], "crawled_links"]:
+    dispatcher = CrawlerDispatcher.build().register_github()
 
     logger.info(f"Starting to crawl {len(links)} link(s).")
 
@@ -31,12 +31,12 @@ def crawl_links(user: UserDocument, links: list[str]) -> Annotated[list[str], "c
     return links
 
 
-def _crawl_link(dispatcher: CrawlerDispatcher, link: str, user: UserDocument) -> tuple[bool, str]:
+def _crawl_link(dispatcher: CrawlerDispatcher, link: str, doc: RepositoryDocument) -> tuple[bool, str]:
     crawler = dispatcher.get_crawler(link)
     crawler_domain = urlparse(link).netloc
 
     try:
-        crawler.extract(link=link, user=user)
+        crawler.extract(link=link, doc=doc)
 
         return (True, crawler_domain)
     except Exception as e:

@@ -2,7 +2,7 @@ from typing_extensions import Annotated
 from zenml import get_step_context, step
 
 from llm_engineering.application.preprocessing import CleaningDispatcher
-from llm_engineering.domain.cleaned_documents import CleanedDocument
+from llm_engineering.domain.cleaned_documents import CleanedRepositoryDocument
 
 
 @step
@@ -20,20 +20,20 @@ def clean_documents(
     return cleaned_documents
 
 
-def _get_metadata(cleaned_documents: list[CleanedDocument]) -> dict:
+def _get_metadata(cleaned_documents: list[CleanedRepositoryDocument]) -> dict:
     metadata = {"num_documents": len(cleaned_documents)}
     for document in cleaned_documents:
         category = document.get_category()
         if category not in metadata:
             metadata[category] = {}
-        if "authors" not in metadata[category]:
-            metadata[category]["authors"] = list()
+        if "links" not in metadata[category]:
+            metadata[category]["links"] = list()
 
         metadata[category]["num_documents"] = metadata[category].get("num_documents", 0) + 1
-        metadata[category]["authors"].append(document.author_full_name)
+        metadata[category]["links"].append(document.link)
 
     for value in metadata.values():
-        if isinstance(value, dict) and "authors" in value:
-            value["authors"] = list(set(value["authors"]))
+        if isinstance(value, dict) and "links" in value:
+            value["links"] = list(set(value["links"]))
 
     return metadata
