@@ -7,14 +7,14 @@ ENV POETRY_VERSION=1.8.3
 ENV DEBIAN_FRONTEND=noninteractive
 ENV POETRY_NO_INTERACTION=1
 
-# Install Google Chrome
-RUN apt-get update -y && \
-    apt-get install -y gnupg wget curl --no-install-recommends && \
-    wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-linux-signing-key.gpg && \
-    echo "deb [signed-by=/usr/share/keyrings/google-linux-signing-key.gpg] https://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list && \
-    apt-get update -y && \
-    apt-get install -y google-chrome-stable && \
-    rm -rf /var/lib/apt/lists/*
+# # Install Google Chrome
+# RUN apt-get update -y && \
+#     apt-get install -y gnupg wget curl --no-install-recommends && \
+#     wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-linux-signing-key.gpg && \
+#     echo "deb [signed-by=/usr/share/keyrings/google-linux-signing-key.gpg] https://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list && \
+#     apt-get update -y && \
+#     apt-get install -y google-chrome-stable && \
+#     rm -rf /var/lib/apt/lists/*
 
 # Install other system dependencies.
 RUN apt-get update -y \
