@@ -64,10 +64,6 @@ class Settings(BaseSettings):
     RERANKING_CROSS_ENCODER_MODEL_ID: str = "cross-encoder/ms-marco-MiniLM-L-4-v2"
     RAG_MODEL_DEVICE: str = "cpu"
 
-    # LinkedIn Credentials
-    LINKEDIN_USERNAME: str | None = None
-    LINKEDIN_PASSWORD: str | None = None
-
     @property
     def OPENAI_MAX_TOKEN_WINDOW(self) -> int:
         official_max_token_window = {

@@ -5,7 +5,7 @@ import click
 from loguru import logger
 
 from llm_engineering.domain.base.nosql import NoSQLBaseDocument
-from llm_engineering.domain.documents import ArticleDocument, PostDocument, RepositoryDocument, UserDocument
+from llm_engineering.domain.documents import ArticleDocument, RepositoryDocument
 
 
 @click.command()
@@ -46,9 +46,7 @@ def __export(data_dir: Path) -> None:
     data_dir.mkdir(parents=True, exist_ok=True)
 
     __export_data_category(data_dir, ArticleDocument)
-    __export_data_category(data_dir, PostDocument)
     __export_data_category(data_dir, RepositoryDocument)
-    __export_data_category(data_dir, UserDocument)
 
 
 def __export_data_category(data_dir: Path, category_class: type[NoSQLBaseDocument]) -> None:
@@ -67,9 +65,7 @@ def __import(data_dir: Path) -> None:
 
     data_category_classes = {
         "ArticleDocument": ArticleDocument,
-        "PostDocument": PostDocument,
         "RepositoryDocument": RepositoryDocument,
-        "UserDocument": UserDocument,
     }
 
     for file in data_dir.iterdir():

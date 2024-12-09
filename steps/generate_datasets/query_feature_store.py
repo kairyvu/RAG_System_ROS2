@@ -7,9 +7,7 @@ from zenml import step
 
 from llm_engineering.domain.base.nosql import NoSQLBaseDocument
 from llm_engineering.domain.cleaned_documents import (
-    CleanedArticleDocument,
     CleanedDocument,
-    CleanedPostDocument,
     CleanedRepositoryDocument,
 )
 
@@ -29,12 +27,6 @@ def fetch_all_data() -> dict[str, list[NoSQLBaseDocument]]:
     with ThreadPoolExecutor() as executor:
         future_to_query = {
             executor.submit(
-                __fetch_articles,
-            ): "articles",
-            executor.submit(
-                __fetch_posts,
-            ): "posts",
-            executor.submit(
                 __fetch_repositories,
             ): "repositories",
         }
@@ -50,14 +42,6 @@ def fetch_all_data() -> dict[str, list[NoSQLBaseDocument]]:
                 results[query_name] = []
 
     return results
-
-
-def __fetch_articles() -> list[CleanedDocument]:
-    return __fetch(CleanedArticleDocument)
-
-
-def __fetch_posts() -> list[CleanedDocument]:
-    return __fetch(CleanedPostDocument)
 
 
 def __fetch_repositories() -> list[CleanedDocument]:
