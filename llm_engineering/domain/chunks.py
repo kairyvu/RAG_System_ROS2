@@ -10,8 +10,10 @@ from .base import VectorBaseDocument
 class Chunk(VectorBaseDocument, ABC):
     content: str
     platform: str
+    document_id: UUID4
     source_id: UUID4
     metadata: dict = Field(default_factory=dict)
+    title: str
 
 
 class RepositoryChunk(Chunk):

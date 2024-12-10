@@ -155,7 +155,7 @@ def main(
         run_args_etl = {}
         pipeline_args["config_path"] = root_dir / "configs" / etl_config_filename
         assert pipeline_args["config_path"].exists(), f"Config file not found: {pipeline_args['config_path']}"
-        pipeline_args["run_name"] = f"digital_data_etl_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
+        pipeline_args["run_name"] = f"data_etl_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
         digital_data_etl.with_options(**pipeline_args)(**run_args_etl)
 
     if run_export_artifact_to_json:

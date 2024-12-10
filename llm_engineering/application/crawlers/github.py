@@ -25,7 +25,6 @@ class GithubCrawler(BaseCrawler):
             return
 
         logger.info(f"Starting scrapping GitHub repository: {link}")
-
         repo_name = link.rstrip("/").split("/")[-1]
 
         local_temp = tempfile.mkdtemp()
@@ -49,13 +48,9 @@ class GithubCrawler(BaseCrawler):
                     with open(os.path.join(root, file), "r", errors="ignore") as f:  # noqa: PTH123, PTH118
                         tree[file_path] = f.read().replace(" ", "")
 
-            source_id = kwargs["doc"]
+            doc = kwargs["doc"]
             instance = self.model(
-                content=tree,
-                name=repo_name,
-                source_id=source_id,
-                link=link,
-                platform="github",
+                content=tree, name=repo_name, source_id=doc.id, link=link, platform="github", title=doc.title
             )
             instance.save()
 

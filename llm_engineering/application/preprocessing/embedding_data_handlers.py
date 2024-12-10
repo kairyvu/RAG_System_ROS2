@@ -44,8 +44,7 @@ class QueryEmbeddingHandler(EmbeddingDataHandler):
     def map_model(self, data_model: Query, embedding: list[float]) -> EmbeddedQuery:
         return EmbeddedQuery(
             id=data_model.id,
-            author_id=data_model.author_id,
-            author_full_name=data_model.author_full_name,
+            title=data_model.title,
             content=data_model.content,
             embedding=embedding,
             metadata={
@@ -66,8 +65,8 @@ class RepositoryEmbeddingHandler(EmbeddingDataHandler):
             name=data_model.name,
             link=data_model.link,
             document_id=data_model.document_id,
-            author_id=data_model.author_id,
-            author_full_name=data_model.author_full_name,
+            title=data_model.title,
+            source_id=data_model.source_id,
             metadata={
                 "embedding_model_id": embedding_model.model_id,
                 "embedding_size": embedding_model.embedding_size,

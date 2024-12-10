@@ -30,11 +30,10 @@ class CleaningDataHandler(ABC, Generic[DocumentT, CleanedDocumentT]):
 class RepositoryCleaningHandler(CleaningDataHandler):
     def clean(self, data_model: RepositoryDocument) -> CleanedRepositoryDocument:
         return CleanedRepositoryDocument(
-            id=data_model.id,
+            source_id=data_model.id,
             content=clean_text(" #### ".join(data_model.content.values())),
             platform=data_model.platform,
             name=data_model.name,
             link=data_model.link,
-            author_id=data_model.author_id,
-            author_full_name=data_model.author_full_name,
+            title=data_model.title,
         )

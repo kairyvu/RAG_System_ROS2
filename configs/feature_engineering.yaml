@@ -1,6 +1,6 @@
 parameters:
   links:
-    - https://github.com/moveit/moveit2
-    - https://github.com/ros-navigation/docs.nav2.org
-    - https://github.com/ros-infrastructure/www.ros.org
-    - https://github.com/gazebosim/gz-sim/
+    - Movelt Motion Planning
+    - Ros Navigation
+    - Robot Operating System
+    - Robotic Simulator

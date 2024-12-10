@@ -10,14 +10,13 @@ from llm_engineering.domain.documents import Document, RepoInfoDocument, Reposit
 
 @step
 def query_data_warehouse(
-    links: list[str],
+    titles: list[str],
 ) -> Annotated[list, "raw_documents"]:
     documents = []
-    for link in links:
-        repo_name = link.rstrip("/").split("/")[-1]
-        logger.info(f"Querying data warehouse for {repo_name} subdomain")
+    for title in titles:
+        logger.info(f"Querying data warehouse for {title} subdomain")
 
-        profile = RepoInfoDocument.get_or_create(link=link, title=repo_name)
+        profile = RepoInfoDocument.get_or_create(title=title)
 
         results = fetch_all_data(profile)
         repo_documents = [doc for query_result in results.values() for doc in query_result]
@@ -62,14 +61,14 @@ def _get_metadata(documents: list[Document]) -> dict:
         collection = document.get_collection_name()
         if collection not in metadata:
             metadata[collection] = {}
-        if "authors" not in metadata[collection]:
-            metadata[collection]["authors"] = list()
+        if "titles" not in metadata[collection]:
+            metadata[collection]["titles"] = list()
 
         metadata[collection]["num_documents"] = metadata[collection].get("num_documents", 0) + 1
-        metadata[collection]["authors"].append(document.author_full_name)
+        metadata[collection]["titles"].append(document.title)
 
     for value in metadata.values():
-        if isinstance(value, dict) and "authors" in value:
-            value["authors"] = list(set(value["authors"]))
+        if isinstance(value, dict) and "titles" in value:
+            value["titles"] = list(set(value["titles"]))
 
     return metadata

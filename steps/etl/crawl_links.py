@@ -6,11 +6,11 @@ from typing_extensions import Annotated
 from zenml import get_step_context, step
 
 from llm_engineering.application.crawlers.dispatcher import CrawlerDispatcher
-from llm_engineering.domain.documents import RepositoryDocument
+from llm_engineering.domain.documents import RepoInfoDocument
 
 
 @step
-def crawl_links(user: RepositoryDocument, links: list[str]) -> Annotated[list[str], "crawled_links"]:
+def crawl_links(repo: RepoInfoDocument, links: list[str]) -> Annotated[list[str], "crawled_links"]:
     dispatcher = CrawlerDispatcher.build().register_github()
 
     logger.info(f"Starting to crawl {len(links)} link(s).")
@@ -18,7 +18,7 @@ def crawl_links(user: RepositoryDocument, links: list[str]) -> Annotated[list[st
     metadata = {}
     successfull_crawls = 0
     for link in tqdm(links):
-        successfull_crawl, crawled_domain = _crawl_link(dispatcher, link, user)
+        successfull_crawl, crawled_domain = _crawl_link(dispatcher, link, repo)
         successfull_crawls += successfull_crawl
 
         metadata = _add_to_metadata(metadata, crawled_domain, successfull_crawl)
@@ -31,13 +31,12 @@ def crawl_links(user: RepositoryDocument, links: list[str]) -> Annotated[list[st
     return links
 
 
-def _crawl_link(dispatcher: CrawlerDispatcher, link: str, doc: RepositoryDocument) -> tuple[bool, str]:
+def _crawl_link(dispatcher: CrawlerDispatcher, link: str, doc: RepoInfoDocument) -> tuple[bool, str]:
     crawler = dispatcher.get_crawler(link)
     crawler_domain = urlparse(link).netloc
 
     try:
         crawler.extract(link=link, doc=doc)
-
         return (True, crawler_domain)
     except Exception as e:
         logger.error(f"An error occurred while crowling: {e!s}")

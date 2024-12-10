@@ -57,8 +57,10 @@ class RepositoryChunkingHandler(ChunkingDataHandler):
                 platform=data_model.platform,
                 name=data_model.name,
                 link=data_model.link,
-                source_id=data_model.id,
+                document_id=data_model.id,
+                source_id=data_model.source_id,
                 metadata=self.metadata,
+                title=data_model.title,
             )
             data_models_list.append(model)
 
