@@ -8,7 +8,6 @@ from .types import DataCategory
 
 class RepoInfoDocument(NoSQLBaseDocument):
     title: str
-    link: str
 
     class Settings:
         name = "subdomains"
@@ -18,6 +17,7 @@ class Document(NoSQLBaseDocument, ABC):
     content: dict
     platform: str
     source_id: UUID4 = Field(alias="source_id")
+    title: str
 
 
 class RepositoryDocument(Document):

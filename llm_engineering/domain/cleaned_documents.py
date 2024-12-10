@@ -11,6 +11,7 @@ class CleanedDocument(VectorBaseDocument, ABC):
     content: str
     platform: str
     source_id: UUID4
+    title: str
 
 
 class CleanedRepositoryDocument(CleanedDocument):

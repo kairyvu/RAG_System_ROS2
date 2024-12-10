@@ -12,8 +12,8 @@ class EmbeddedChunk(VectorBaseDocument, ABC):
     embedding: list[float] | None
     platform: str
     document_id: UUID4
-    author_id: UUID4
-    author_full_name: str
+    source_id: UUID4
+    title: str
     metadata: dict = Field(default_factory=dict)
 
     @classmethod
@@ -24,7 +24,7 @@ class EmbeddedChunk(VectorBaseDocument, ABC):
             Chunk {i + 1}:
             Type: {chunk.__class__.__name__}
             Platform: {chunk.platform}
-            Author: {chunk.author_full_name}
+            Title: {chunk.title}
             Content: {chunk.content}\n
             """
 
